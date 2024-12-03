@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="english">
+  <head>
+    <title>Маркировка документа</title>
+    <meta name="viewport" content="width=device-width, initial-scale=0.75" />
+    <meta charset="utf-8" />
+
+    <style data-tag="reset-style-sheet">
+      html {  line-height: 1.15;}body {  margin: 0;}* {  box-sizing: border-box;  border-width: 0;  border-style: solid;  -webkit-font-smoothing: antialiased;}p,li,ul,pre,div,h1,h2,h3,h4,h5,h6,figure,blockquote,figcaption {  margin: 0;  padding: 0;}button {  background-color: transparent;}button,input,optgroup,select,textarea {  font-family: inherit;  font-size: 100%;  line-height: 1.15;  margin: 0;}button,select {  text-transform: none;}button,[type="button"],[type="reset"],[type="submit"] {  -webkit-appearance: button;  color: inherit;}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner {  border-style: none;  padding: 0;}button:-moz-focus,[type="button"]:-moz-focus,[type="reset"]:-moz-focus,[type="submit"]:-moz-focus {  outline: 1px dotted ButtonText;}a {  color: inherit;  text-decoration: inherit;}input {  padding: 2px 4px;}img {  display: block;}details {  display: block;  margin: 0;  padding: 0;}summary::-webkit-details-marker {  display: none;}[data-thq="accordion"] [data-thq="accordion-content"] {  max-height: 0;  overflow: hidden;  transition: max-height 0.3s ease-in-out;  padding: 0;}[data-thq="accordion"] details[data-thq="accordion-trigger"][open] + [data-thq="accordion-content"] {  max-height: 300vh;}details[data-thq="accordion-trigger"][open] summary [data-thq="accordion-icon"] {  transform: rotate(180deg);}html { scroll-behavior: smooth  }
+    </style>
+    <style data-tag="default-style-sheet">
+      html {
+        font-family: Rosatom-Regular;
+        font-size: 16px;
+      }
+
+      body {
+        transform: scale(0.75); /* Уменьшает масштаб до 75% */
+        transform-origin: top left; /* Устанавливает точку начала трансформации */
+        height: 100%;
+        width: 100%;
+        font-weight: 400;
+        font-style:normal;
+        text-decoration: none;
+        text-transform: none;
+        letter-spacing: normal;
+        line-height: 1.15;
+        background: white;
+        overflow: hidden;
+      }
+
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/animate.css@4.1.1/animate.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css"
+    />
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <script>
+      function parseKKS(kksCode) {
+        // Проверяем, что строка соответствует формату
+        const kksPattern = /^([A-Z]{2})\.([A-Z])\.([A-Z\d]{4})\.([A-Z\d])\.([A-Z\d]{6})\.([A-Z\d]{6})\.([A-Z\d]{3})\.([A-Z\d]{2})\.([A-Z\d]{4})\.([A-Z])$/;
+
+        const match = kksCode.match(kksPattern);
+        if (!match) {
+          throw new Error("ККС-код не соответствует ожидаемому формату.");
+        }
+
+        // Разбиваем код на части
+        const parsed = {
+          aсе: match[1],              // ED
+          stage: match[2],           // Проектирование (P)
+          developer: match[3],      // 4 символа
+          blockNumber: match[4],       // 1 символ
+          division: match[5],           // 6 символов
+          subdivision: match[6],         // 6 символов
+          specialty: match[7], // 3 символа то же самое что и вид работы!!!
+          docType: match[8],     // 2 символа
+          registrationNumber: match[9], // 4 символа
+          language: match[10]             // 1 символ
+        };
+
+        return parsed;
+      }
+
+      function addCodeFunction(){
+        console.log("Функция маркировки домукнта.");
+      }
+
+      function updateCodeFunction(){
+        console.log("Функция маркировки домукнта.");
+      }
+
+      function fillFormFunction(input){
+        if (input.files.length) {
+          const file = input.files[0]; // Получаем файл из input
+          const fileName = input.files[0].name; // Имя файла
+          const kksCodeInput = document.getElementById('kks-code');
+          const workTypeInput = document.getElementById('work-type');
+          const docTypeInput = document.getElementById('doc-type')
+
+          // Проверяем расширение файла
+          if (fileName.endsWith('.docx')) {
+            showAlert("fileSuccess");
+            // Здесь можно выполнить загрузку файла на сервер
+            kksCodeInput.value = fileName.slice(0, -5); //kks из названия файлы
+            const parsedKKS = parseKKS(fileName.slice(0, -5)); 
+
+            $.getJSON("workType.json", function(workTypeJson) {
+              const workType = workTypeJson[parsedKKS.specialty];
+              workTypeInput.value = workType;
+            });
+
+            $.getJSON("docType.json", function(docTypeJson) {
+              const docType = docTypeJson[parsedKKS.docType];
+              docTypeInput.value = docType;
+            });
+
+          } else {
+            showAlert("errorDocTypeAlert")
+          }
+        }
+      }
+
+      function showAlert(alert) {
+      document
+        .getElementById(alert)
+        .style
+        .display = "block";
+    }
+
+    function closeAlert(alert) {
+      document
+        .getElementById(alert)
+        .style
+        .display = "none";
+    }
+    </script>
+
+  </head>
+  <body>
+    <link rel="stylesheet" href="./style.css" />
+    <div>
+      <link href="./index.css" rel="stylesheet" />
+
+      <div class="container">
+        
+        <div class="myAlert" id="errorDocTypeAlert">
+          <h2>Ошибка!</h2>
+          <br>
+          <p>Формат загружаемого файла не соответствует требованиям</p>
+          <p>Загрузите файл в формате docx</p>
+          <br><br><br>
+          <button class="close-button" onclick="closeAlert('errorDocTypeAlert')">ОК</button>
+        </div>
+
+        <div class="myAlert" id="fileSuccess">
+          <br><br><br>
+          <p>Файл успешно загружен.</p>
+          <br><br><br>
+          <button class="close-button" onclick="closeAlert('fileSuccess')">ОК</button>
+        </div>
+        
+        <img
+            src="public/external/background.png"
+            alt="background"
+            class="background"
+          />
+
+          <div class="header">
+            <span>Маркировка документов</span>
+            <img
+              src="public/external/rosatom_logo.png"
+              alt="rosatom_logo"
+              class="rosatom-logo"
+            />
+          </div>
+
+          <button class="add-code-button" id="add_code" onclick="addCodeFunction()">
+            <span>Маркировать документ</span>
+          </button>         
+          
+
+          <input type="file" id="addFile" accept=".docx" onchange="fillFormFunction(this)">
+
+
+          <div class="add-file-dropbox" id="dropbox">
+            <div class="add-file-dropbox-dotline"></div>
+            <img
+              src="public/external/docxicon.png"
+              alt="docxicon"
+              class="docxicon"
+            />
+            <span>Перетащите файл в формате docx</span>
+          </div>
+
+          <script>
+            const dropZone = document.getElementById('dropbox');
+
+            // Событие перетаскивания на область
+            dropZone.addEventListener('dragover', (e) => {
+              e.preventDefault(); // Предотвращаем открытие файла
+              dropZone.classList.add('dragover');
+            });
+        
+            // Событие ухода курсора из области
+            dropZone.addEventListener('dragleave', () => {
+              dropZone.classList.remove('dragover');
+            });
+        
+            // Событие отпускания файла
+            dropZone.addEventListener('drop', (e) => {
+              e.preventDefault(); // Предотвращаем открытие файла
+              dropZone.classList.remove('dragover');
+        
+              //const files = e.dataTransfer.files; // Получение перетащенных файлов
+              fillFormFunction(e.dataTransfer);
+            });
+          </script>
+          
+          <span class="fill-form">
+            Заполните форму для генерации QR кода:
+          </span>
+          
+          <div class="input-form">
+            <div class="inputtext">
+              <span class="sender-input-text">Код отправителя</span>
+              <span class="kks-code-text">KKS-Код</span>
+              <span class="work-type-text">Вид работы</span>
+              <span class="doc-type-text">Вид документа</span>
+              <span class="doc-version-text">Версия документа</span>
+              <span class="date-inpit-text">Дата загрузки</span>
+              
+              <div class="sender-input">
+                <input type="text" value="123456" readonly>
+              </div>
+
+              <div class="kks-input">
+                <input type="text" id="kks-code" placeholder="123456789">
+              </div>
+
+              <div class="work-type-input">
+                <input type="text" id="work-type" placeholder="123456">
+              </div>
+
+              <div class="doc-type-input">
+                <input type="text" id="doc-type" placeholder="123456">
+              </div>
+
+              <div class="doc-version-input">
+                <input type="text" placeholder="123456">
+
+              </div>
+              <div class="date-input">
+                <input type="date" id="dateField">
+
+                <script>
+                  // Получаем текущее время
+                  const today = new Date();
+                  
+                  // Форматируем дату в формате YYYY-MM-DD
+                  const formattedDate = today.toISOString().split('T')[0];
+                  
+                  // Находим поле input и задаем значение
+                  document.getElementById('dateField').value = formattedDate;
+                </script>
+
+              </div>
+              
+            </div>
+          </div>
+
+          <img
+            src="public/external/whitesqaure.png"
+            alt="whitesqaure"
+            class="whitesqaure"
+          />
+          <img
+            src="public/external/qrcode.png"
+            alt="qrcode"
+            class="qrcode"
+          />
+          <button class="update-code-button" id="update_code" onclick="updateCodeFunction()">
+            <span>Обновить QR-код</span>
+          </button>
+      </div>
+    </div>
+  </body>
+</html>
